@@ -3,14 +3,15 @@ if FORCE_RELOAD then
   package.loaded["easynote"] = nil
 end
 
-local Notes = {}
+local EasyNote = {}
 
 local config = require("easynote.config").config
+local utils = require("easynote.utils")
 
-Notes.force_reload = true
-Notes.is_configured = false
+EasyNote.force_reload = true
+EasyNote.is_configured = false
 
-function Notes.get_float_fullscreen_opts()
+function EasyNote.get_float_fullscreen_opts()
   local win_width = vim.api.nvim_win_get_width(0)
   local win_height = vim.api.nvim_win_get_height(0)
   local rounded_width = vim.fn.round(win_width * 0.75)
@@ -30,23 +31,23 @@ end
 
 --- Setup
 ---@param opts table setup configuration
-function Notes.setup(opts)
+function EasyNote.setup(opts)
   vim.tbl_deep_extend("force", config, opts)
 
   vim.keymap.set("n", "<leader>N", "<cmd>Notes<cr>", { desc = "Open Wiki Notes File" })
   vim.keymap.set("n", "<leader>n", "<cmd>NotesFloating<cr>", { desc = "Open Wiki Notes File" })
-  Notes.is_configured = true
+  EasyNote.is_configured = true
 end
 
 --- Open a floating window.. reserving the right to have this function do more
 ---@param file string file path to open in floating window
 ---@param opts table|nil currently unused, reserved for future use
-function Notes.open_floating(file, opts)
+function EasyNote.open_floating(file, opts)
   ---@diagnostic disable-next-line: unused-local, redefined-local
   local opts = opts or {}
   ---@diagnostic disable-next-line: unused-local
   local original_winid = vim.api.nvim_get_current_win()
-  local win_opts = Notes.get_float_fullscreen_opts()
+  local win_opts = EasyNote.get_float_fullscreen_opts()
   local bufnr = vim.api.nvim_create_buf(false, false)
   ---@diagnostic disable-next-line: unused-local
   local winid = vim.api.nvim_open_win(bufnr, true, win_opts)
@@ -64,8 +65,8 @@ end
 --- currently works with fzf, should extend in the future to suppor telescope or native
 ---@param files table[string] list of files to provide user for prompt
 ---@param opts FilePromptOpts handler for filename
-function Notes.prompt_and_open_file(files, opts)
-  local handler = opts["handler"] or Notes.open_floating
+function EasyNote.prompt_and_open_file(files, opts)
+  local handler = opts["handler"] or EasyNote.open_floating
   local handler_opts = opts["handler_opts"] or {}
   require("fzf-lua").fzf_exec(files, {
     actions = {
@@ -80,13 +81,6 @@ function Notes.prompt_and_open_file(files, opts)
   })
 end
 
---- Get the root directory of a filename, using `config.dir_markers`
----@param filename string filename to get root dir of
----@return string? root directory of filename
-function Notes.get_root_dir(filename)
-  return vim.fs.root(vim.fn.expand(filename), config.dir_markers)
-end
-
 ---@class GetNotesOpts
 ---@field scope NotesScope?
 
@@ -94,17 +88,17 @@ end
 ---@param opts GetNotesOpts? opts passed by caller
 ---@return table[string] list of potential notes files
 ---@diagnostic disable-next-line: unused-local
-function Notes.get_note_files(opts)
+function EasyNote.get_note_files(opts)
   opts = opts or {}
   local notes_scope = opts.scope or config.default_notes_scope
-  local search_dir = notes_scope == "global" and config.notes_dir or Notes.get_root_dir(vim.fn.expand("%s"))
+  local search_dir = notes_scope == "global" and config.notes_dir or utils.get_root_dir(vim.fn.expand("%s"))
   return vim.fs.find(config.notes_filenames, { limit = math.huge, scope = "file", path = vim.fn.expand(search_dir) })
 end
 
 --- Return default file, if applicable, else nil
 ---@param opts UserCmdOpts
 ---@return string? file
-function Notes.get_default_file(opts)
+function EasyNote.get_default_file(opts)
   local scope = opts.scope or config.default_notes_scope
   local use_default = opts.use_default or config.use_default_file
 
@@ -128,28 +122,28 @@ end
 
 --- Open notes
 ---@param opts UserCmdOpts opts to configure notes
-function Notes.open(opts)
+function EasyNote.open(opts)
   opts = opts or {}
   local floating = opts.floating or false
 
   ---@type NotesScope
   local notes_scope = opts.scope or "global"
 
-  local file = Notes.get_default_file(opts)
+  local file = EasyNote.get_default_file(opts)
 
   if floating then
     if not file then
-      Notes.prompt_and_open_file(
-        Notes.get_note_files({ scope = notes_scope }),
-        { handler = Notes.open_floating, handler_opts = {} }
+      EasyNote.prompt_and_open_file(
+        EasyNote.get_note_files({ scope = notes_scope }),
+        { handler = EasyNote.open_floating, handler_opts = {} }
       )
     else
-      Notes.open_floating(file)
+      EasyNote.open_floating(file)
     end
   else
     -- TODO: use `Notes.prompt_for_file` instead of default fzf stuff
     require("fzf-lua").fzf_exec(
-      Notes.get_note_files(),
+      EasyNote.get_note_files(),
       { actions = {
         ["default"] = require("fzf-lua").actions.file_edit,
       } }
@@ -177,8 +171,8 @@ vim.api.nvim_create_user_command("NotesInvalidateDefault", function()
   require("easynote").config.default_file = nil
 end, { desc = "Reset default notes file" })
 
-if not Notes.is_configured or Notes.force_reload then
-  Notes.setup({})
+if not EasyNote.is_configured or EasyNote.force_reload then
+  EasyNote.setup({})
 end
 
-return Notes
+return EasyNote

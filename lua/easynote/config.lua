@@ -1,4 +1,4 @@
-local Config = {}
+local EasyNoteConfig = {}
 
 ---@alias DefaultPickerOptions "fzf"
 ---@alias NotesScope "local" | "global"
@@ -11,7 +11,7 @@ local Config = {}
 ---@field default_picker DefaultPickerOptions
 ---@field default_notes_scope NotesScope
 ---@field dir_markers table[string] list of strings which will be used to mark the project root
-Config.config = {
+EasyNoteConfig.config = {
   notes_dir = "~/wiki",
   notes_filenames = { "notes.md" },
   default_file = nil,
@@ -21,4 +21,4 @@ Config.config = {
   dir_markers = { ".git" },
 }
 
-return Config
+return EasyNoteConfig
