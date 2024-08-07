@@ -5,29 +5,10 @@ end
 
 local Notes = {}
 
+local config = require("easynote.config").config
+
 Notes.force_reload = true
 Notes.is_configured = false
-
----@alias DefaultPickerOptions "fzf"
----@alias NotesScope "local" | "global"
-
----@class NotesConfiguration
----@field notes_dir string
----@field notes_filenames table[string]
----@field default_global_notes_file string|nil
----@field use_default_file boolean
----@field default_picker DefaultPickerOptions
----@field default_notes_scope NotesScope
----@field dir_markers table[string] list of strings which will be used to mark the project root
-Notes.config = {
-  notes_dir = "~/wiki",
-  notes_filenames = { "notes.md" },
-  default_file = nil,
-  use_default_file = true,
-  default_picker = "fzf",
-  default_notes_scope = "global",
-  dir_markers = { ".git" },
-}
 
 function Notes.get_float_fullscreen_opts()
   local win_width = vim.api.nvim_win_get_width(0)
@@ -50,7 +31,7 @@ end
 --- Setup
 ---@param opts table setup configuration
 function Notes.setup(opts)
-  vim.tbl_deep_extend("force", Notes.config, opts)
+  vim.tbl_deep_extend("force", config, opts)
 
   vim.keymap.set("n", "<leader>N", "<cmd>Notes<cr>", { desc = "Open Wiki Notes File" })
   vim.keymap.set("n", "<leader>n", "<cmd>NotesFloating<cr>", { desc = "Open Wiki Notes File" })
@@ -84,7 +65,6 @@ end
 ---@param files table[string] list of files to provide user for prompt
 ---@param opts FilePromptOpts handler for filename
 function Notes.prompt_and_open_file(files, opts)
-  local config = Notes.config
   local handler = opts["handler"] or Notes.open_floating
   local handler_opts = opts["handler_opts"] or {}
   require("fzf-lua").fzf_exec(files, {
@@ -104,7 +84,6 @@ end
 ---@param filename string filename to get root dir of
 ---@return string? root directory of filename
 function Notes.get_root_dir(filename)
-  local config = Notes.config
   return vim.fs.root(vim.fn.expand(filename), config.dir_markers)
 end
 
@@ -117,7 +96,6 @@ end
 ---@diagnostic disable-next-line: unused-local
 function Notes.get_note_files(opts)
   opts = opts or {}
-  local config = Notes.config
   local notes_scope = opts.scope or config.default_notes_scope
   local search_dir = notes_scope == "global" and config.notes_dir or Notes.get_root_dir(vim.fn.expand("%s"))
   return vim.fs.find(config.notes_filenames, { limit = math.huge, scope = "file", path = vim.fn.expand(search_dir) })
@@ -127,7 +105,6 @@ end
 ---@param opts UserCmdOpts
 ---@return string? file
 function Notes.get_default_file(opts)
-  local config = Notes.config
   local scope = opts.scope or config.default_notes_scope
   local use_default = opts.use_default or config.use_default_file
 
