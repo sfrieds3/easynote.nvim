@@ -1,5 +1,7 @@
 local EasyNoteUtils = {}
 
+local config = require("easynote.config")
+
 --- Get the root directory of a filename, using `config.dir_markers`
 ---@param filename string filename to get root dir of
 ---@return string? root directory of filename

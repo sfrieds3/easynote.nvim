@@ -3,22 +3,64 @@ local EasyNoteConfig = {}
 ---@alias DefaultPickerOptions "fzf"
 ---@alias NotesScope "local" | "global"
 
+---@class EasyNoteDefaultLocalFile
+---@field dir string
+---@field notes_file string
+
+---@type EasyNoteDefaultLocalFile
+local default_local_files = setmetatable({}, {
+  __index = function(_, _)
+    return nil -- TODO: do we want to do something more interesting here?
+  end,
+})
+
 ---@class NotesConfiguration
 ---@field notes_dir string
 ---@field notes_filenames table[string]
----@field default_global_notes_file string|nil
+---@field default_global_notes_file string?
+---@field default_local_notes_files table[EasyNoteDefaultLocalFile?]
 ---@field use_default_file boolean
 ---@field default_picker DefaultPickerOptions
 ---@field default_notes_scope NotesScope
 ---@field dir_markers table[string] list of strings which will be used to mark the project root
-EasyNoteConfig.config = {
+---@field create_user_commands boolean
+local defaults = {
   notes_dir = "~/wiki",
   notes_filenames = { "notes.md" },
-  default_file = nil,
+  default_global_notes_file = nil,
+  default_local_notes_files = default_local_files,
   use_default_file = true,
   default_picker = "fzf",
   default_notes_scope = "global",
   dir_markers = { ".git" },
+  create_user_commands = true,
+
+  -- TODO: use these for keymap configuration
+  mappings = {
+    Notes = "<leader>N",
+    NotesFloating = "<leader>n",
+  },
 }
 
-return EasyNoteConfig
+local config = {}
+
+--- Setup
+---@param opts table? setup configuration
+function EasyNoteConfig.setup(opts)
+  opts = opts or {}
+  config = vim.tbl_deep_extend("force", defaults, opts)
+
+  vim.keymap.set("n", "<leader>N", "<cmd>Notes<cr>", { desc = "Open Wiki Notes File" })
+  vim.keymap.set("n", "<leader>n", "<cmd>NotesFloating<cr>", { desc = "Open Wiki Notes File" })
+
+  if config.create_user_commands then
+    require("easynote.commands").setup()
+  end
+end
+
+return setmetatable(EasyNoteConfig, {
+  __index = function(_, key)
+    config = config or EasyNoteConfig.setup()
+    return config[key]
+  end,
+})
