@@ -1,11 +1,9 @@
 local EasyNoteConfig = {}
 
+require("easynote.interfaces")
+
 ---@alias DefaultPickerOptions "fzf"
 ---@alias NotesScope "local" | "global"
-
----@class EasyNoteDefaultLocalFile
----@field dir string
----@field notes_file string
 
 ---@type EasyNoteDefaultLocalFile
 local default_local_files = setmetatable({}, {
@@ -14,16 +12,7 @@ local default_local_files = setmetatable({}, {
   end,
 })
 
----@class NotesConfiguration
----@field notes_dir string
----@field notes_filenames table[string]
----@field default_global_notes_file string?
----@field default_local_notes_files table[EasyNoteDefaultLocalFile?]
----@field use_default_file boolean
----@field default_picker DefaultPickerOptions
----@field default_notes_scope NotesScope
----@field dir_markers table[string] list of strings which will be used to mark the project root
----@field create_user_commands boolean
+---@type EasyNoteConfiguration
 local defaults = {
   notes_dir = "~/wiki",
   notes_filenames = { "notes.md" },
@@ -34,8 +23,6 @@ local defaults = {
   default_notes_scope = "global",
   dir_markers = { ".git" },
   create_user_commands = true,
-
-  -- TODO: use these for keymap configuration
   mappings = {
     Notes = "<leader>N",
     NotesFloating = "<leader>n",
@@ -44,7 +31,7 @@ local defaults = {
 
 local config = {}
 
---- Setup
+---Setup
 ---@param opts table? setup configuration
 function EasyNoteConfig.setup(opts)
   opts = opts or {}
@@ -56,6 +43,8 @@ function EasyNoteConfig.setup(opts)
   if config.create_user_commands then
     require("easynote.commands").setup()
   end
+
+  require("easynote.keymap").setup(config)
 end
 
 return setmetatable(EasyNoteConfig, {

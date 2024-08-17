@@ -1,13 +1,10 @@
 local EasyNoteApi = {}
+
+require("easynote.interfaces")
+
 local file = require("easynote.file")
 local window = require("easynote.window")
 local utils = require("easynote.utils")
-
----@class UserCmdOpts
----@field scope NotesScope?
----@field root_dir string?
----@field floating boolean?
----@field default boolean?
 
 --- Open notes
 ---@param opts UserCmdOpts opts to configure notes
