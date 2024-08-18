@@ -24,8 +24,8 @@ local defaults = {
   dir_markers = { ".git" },
   create_user_commands = true,
   mappings = {
-    Notes = "<leader>N",
-    NotesFloating = "<leader>n",
+    EasyNote = "<leader>N",
+    EasyNoteFloating = "<leader>n",
   },
 }
 

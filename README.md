@@ -9,7 +9,7 @@ lazy.nvim:
 ```lua
   {
     "sfrieds3/easynote.nvim",
-    cmd = { "Notes", "NotesL", "NotesFloating", "NotesFloatingL" },
+    cmd = { "EasyNote", "EasyNoteL", "EasyNoteFloating", "EasyNoteFloatingL" },
     opts = {
       -- configuration goes here
     },
@@ -20,11 +20,11 @@ lazy.nvim:
 
 The default configuration will create a few user commands:
 
-- `:Notes` prompt and open note from configured global notes directory in current buffer
-- `:NotesL` prompt and open note from local project notes directory in current buffer
-- `:NotesFloating` prompt and open note from configured global notes directory in floating window
-- `:NotesFloatingL` prompt and open note from local project notes directory in floating window
+- `:EasyNote` prompt and open note from configured global notes directory in current buffer
+- `:EasyNoteL` prompt and open note from local project notes directory in current buffer
+- `:EasyNoteFloating` prompt and open note from configured global notes directory in floating window
+- `:EasyNoteFloatingL` prompt and open note from local project notes directory in floating window
 
-EasyNote will cache the default notes file for a given context. This means you will only be prompted to pick a notes file the first time running either `:Notes[L]` or `:NotesFloating[L]`. Any subsequent calls will automatically open this default file.
+EasyNote will cache the default notes file for a given context. This means you will only be prompted to pick a notes file the first time running either `:EasyNote[L]` or `:EasyNoteFloating[L]`. Any subsequent calls will automatically open this default file.
 
-To invalidate this cache, run `:NotesInvalidateDefault`. Alternately, pass `{default = false}` to  `require("easynote").open` and EasyNote will prompt to pick a notes file.
+To invalidate this cache, run `:EasyNoteInvalidateDefault`. Alternately, pass `{default = false}` to  `require("easynote").open` and EasyNote will prompt to pick a notes file.
