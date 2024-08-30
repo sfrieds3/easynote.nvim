@@ -36,4 +36,13 @@ function EasyNoteApi.open(opts)
   end
 end
 
+--- Invalidate the local default file
+---@param root_dir? string optional root dir to invalidate
+function EasyNoteApi.invalidate_local_default_file(root_dir)
+  root_dir = root_dir or utils.get_root_dir(vim.fn.expand("%"))
+  if root_dir then
+    file.reset_default_file(root_dir)
+  end
+end
+
 return EasyNoteApi
