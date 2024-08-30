@@ -20,6 +20,10 @@ function EasyNoteCommands.setup()
   vim.api.nvim_create_user_command("EasyNoteInvalidateDefault", function()
     require("easynote.config").default_global_notes_file = nil
   end, { desc = "Reset default notes file" })
+
+  vim.api.nvim_create_user_command("EasyNoteInvalidateLocalDefault", function()
+    require("easynote").invalidate_local_default_file()
+  end, { desc = "Reset default notes file" })
 end
 
 return EasyNoteCommands
