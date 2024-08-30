@@ -64,4 +64,10 @@ function EasyNote.get_default_file(opts)
   return file
 end
 
+--- Reset default notes file for a given root dir to nil
+---@param root_dir string root dir to reset default file for
+function EasyNote.reset_default_file(root_dir)
+  config.default_local_notes_files[root_dir] = nil
+end
+
 return EasyNote
