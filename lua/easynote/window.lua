@@ -1,12 +1,14 @@
 local EasyNoteWindow = {}
 
 function EasyNoteWindow.get_float_fullscreen_opts()
+  local win_config = require("easynote.config").window_opts
+
   local win_width = vim.api.nvim_win_get_width(0)
   local win_height = vim.api.nvim_win_get_height(0)
-  local rounded_width = vim.fn.round(win_width * 0.75)
-  local rounded_height = vim.fn.round(win_height * 0.75)
-  local row = (win_height - (win_height * 0.75)) / 2
-  local col = (win_width - (win_width * 0.75)) / 2
+  local rounded_width = vim.fn.round(win_width * win_config.width_pct / 100)
+  local rounded_height = vim.fn.round(win_height * win_config.height_pct / 100)
+  local row = (win_height - (win_height * (win_config.height_pct / 100))) / 2
+  local col = (win_width - (win_width * (win_config.width_pct / 100))) / 2
 
   return {
     relative = "win",
