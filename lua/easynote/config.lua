@@ -27,6 +27,9 @@ local defaults = {
     EasyNote = "<leader>N",
     EasyNoteFloating = "<leader>n",
   },
+  window_mappings = {
+    WriteQuit = "q",
+  },
   window_opts = {
     width_pct = 75,
     height_pct = 75,

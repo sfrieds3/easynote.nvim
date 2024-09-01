@@ -1,5 +1,10 @@
 local EasyNoteWindow = {}
 
+EasyNoteWindow.window_cmd_map = {
+  WriteQuit = "<cmd>wq<cr>",
+  Quit = "<cmd>q<cr>",
+}
+
 function EasyNoteWindow.get_float_fullscreen_opts()
   local win_config = require("easynote.config").window_opts
 
@@ -35,6 +40,24 @@ function EasyNoteWindow.open_floating(file, opts)
   vim.bo[bufnr].bufhidden = "wipe"
 
   vim.cmd.edit({ args = file })
+
+  EasyNoteWindow.setup_keymap(require("easynote.config").window_mappings, EasyNoteWindow.window_cmd_map)
+end
+
+-- TODO: consolidate keymap settings into utils
+--- Setup buffer keymaps for EasyNote floating window
+---@param mappings table<string, string> configured foating window mappings
+---@param cmd_map table<string, string> mapping of floating window commands to keymap commnads
+---@param buffer boolean whether to setup buffer keymaps or global keymaps
+function EasyNoteWindow.setup_keymap(mappings, cmd_map, buffer)
+  mappings = mappings or require("easynote.config").window_mappings
+  cmd_map = cmd_map or {}
+  buffer = buffer or true
+
+  for window_cmd, mapping in pairs(mappings) do
+    local cmd = cmd_map[window_cmd] or window_cmd
+    vim.keymap.set("n", mapping, cmd_map[window_cmd], { desc = "EasyNote:" .. mapping, buffer = buffer })
+  end
 end
 
 return EasyNoteWindow
