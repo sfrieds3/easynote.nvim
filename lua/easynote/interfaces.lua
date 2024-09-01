@@ -13,6 +13,7 @@
 ---@field dir_markers table<string>? list of strings which will be used to mark the project root
 ---@field create_user_commands boolean?
 ---@field mappings table<string, string>?
+---@field window_mappings table<string, string>?
 ---@field window_opts WindowOpts??
 
 ---@class UserCmdOpts
