@@ -124,13 +124,8 @@ return {
       local dir = h.tmpdir()
       h.setup({ notes_dir = dir })
       vim.cmd.cd(dir)
-      local msg
-      local notify = vim.notify
-      vim.notify = function(m)
-        msg = m
-      end
       vim.cmd("EasyNoteL")
-      vim.notify = notify
+      local msg = h.messages[1]
       h.truthy(msg and msg:find("no project root"), msg)
     end,
   },

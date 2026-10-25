@@ -78,7 +78,10 @@ function EasyNoteWindow.open_floating(file, opts)
   end
 
   vim.cmd.edit({ args = { file }, magic = { file = false } })
-  EasyNoteWindow.setup_keymap(vim.api.nvim_get_current_buf())
+  local bufnr = vim.api.nvim_get_current_buf()
+  -- pick up changes made outside nvim, e.g. by a sync client
+  vim.cmd.checktime(bufnr)
+  EasyNoteWindow.setup_keymap(bufnr)
 end
 
 ---@type table<integer, string[]> buffers that received window mappings, and the lhs set on each
