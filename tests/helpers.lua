@@ -12,6 +12,10 @@ function Helpers.reset()
     end
   end
   vim.ui.select = original_select
+  Helpers.messages = {}
+  vim.notify = function(msg)
+    table.insert(Helpers.messages, msg)
+  end
   Helpers.data_home = Helpers.tmpdir()
   vim.env.XDG_DATA_HOME = Helpers.data_home
 end
