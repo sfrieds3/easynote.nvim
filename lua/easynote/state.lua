@@ -12,7 +12,7 @@ local defaults = nil
 --- Path of the file default notes files are persisted to
 ---@return string
 function EasyNoteState.path()
-  return vim.fs.joinpath(vim.fn.stdpath("data"), "easynote", "defaults.json")
+  return vim.fs.joinpath(vim.fn.stdpath("data") --[[@as string]], "easynote", "defaults.json")
 end
 
 ---@return EasyNoteDefaults

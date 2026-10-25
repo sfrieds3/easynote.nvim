@@ -13,6 +13,7 @@ lazy.nvim:
     "sfrieds3/easynote.nvim",
     cmd = { "EasyNote", "EasyNoteL", "EasyNoteFloating", "EasyNoteFloatingL" },
     keys = { "<leader>n", "<leader>N" },
+    version = "*", -- latest release, drop this to track main
     opts = {
       -- configuration goes here
     },
@@ -133,4 +134,18 @@ works inside the EasyNote float.
 
 ## Development
 
-Run the tests with `nvim --headless --clean -l tests/run.lua`.
+Checks run in CI on every pull request:
+
+- tests: `nvim --headless --clean -l tests/run.lua` (Neovim 0.10, stable and nightly)
+- formatting: `stylua --check .`
+- lint: `luacheck lua tests`
+- types: `lua-language-server --check lua --configpath "$PWD/.luarc.json"` with `VIMRUNTIME` set
+
+## Releases
+
+Releases are cut by [release-please](https://github.com/googleapis/release-please) from
+[Conventional Commits](https://www.conventionalcommits.org) on `main`. Pull request titles are checked to follow the
+format (`feat: ...`, `fix: ...`, `docs: ...`, `feat!: ...` for breaking changes), so squash merge to use the title as the
+commit message. release-please keeps a release PR open that bumps the version and updates `CHANGELOG.md`; merging it tags
+`vX.Y.Z` and publishes the GitHub release. Until 1.0, breaking changes bump the minor version rather than the
+major version.
