@@ -65,9 +65,8 @@ end
 
 --- Open a floating window.. reserving the right to have this function do more
 ---@param file string file path to open in floating window
----@param opts table? currently unused, reserved for future use
----@diagnostic disable-next-line: unused-local
-function EasyNoteWindow.open_floating(file, opts)
+---@param _opts table? currently unused, reserved for future use
+function EasyNoteWindow.open_floating(file, _opts)
   if EasyNoteWindow.is_open() then
     vim.api.nvim_set_current_win(float_winid --[[@as integer]])
   else

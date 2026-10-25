@@ -86,10 +86,11 @@ function EasyNoteCapture.entry(opts)
     else
       path = vim.fn.fnamemodify(path, ":~")
     end
-    local line2 = opts.line2 or opts.line1
-    local location = path .. ":" .. opts.line1 .. (line2 ~= opts.line1 and ("-" .. line2) or "")
+    local line1 = opts.line1 --[[@as integer]]
+    local line2 = opts.line2 or line1
+    local location = path .. ":" .. line1 .. (line2 ~= line1 and ("-" .. line2) or "")
     table.insert(parts, "`" .. location .. "`")
-    code = vim.api.nvim_buf_get_lines(0, opts.line1 - 1, line2, false)
+    code = vim.api.nvim_buf_get_lines(0, line1 - 1, line2, false)
   end
 
   if root and config.project_notes_dir then
