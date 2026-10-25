@@ -1,17 +1,8 @@
-FORCE_RELOAD = true
-if FORCE_RELOAD then
-  package.loaded["easynote"] = nil
-end
-
 local EasyNote = {}
 
-local config = require("easynote.config")
-local utils = require("easynote.utils")
-
-EasyNote.force_reload = true
-
-function EasyNote.setup()
-  require("easynote.config").setup()
+---@param opts EasyNoteConfiguration? user configuration
+function EasyNote.setup(opts)
+  require("easynote.config").setup(opts)
 end
 
 return setmetatable(EasyNote, {
