@@ -143,17 +143,16 @@ Checks run in CI on every pull request:
 
 ## Releases
 
-Releases are made by pushing a semver tag:
+A release is a semver tag on `main`; plugin managers (e.g. lazy.nvim with `version = "*"`) pick it up from git directly:
 
 ```sh
 git tag -a v0.1.0 -m v0.1.0
 git push origin v0.1.0
 ```
 
-The release workflow runs the full CI suite against the tag and, if it passes, publishes a GitHub release with notes
-generated from the pull requests merged since the previous tag. Tags with a suffix (`v1.0.0-rc.1`) are marked as
-pre-releases. Actions never push commits or open pull requests.
+Tag a commit that is already green on `main`. To also publish a release page with notes from the merged pull requests,
+run `gh release create v0.1.0 --generate-notes`.
 
 Pull request titles are checked to follow [Conventional Commits](https://www.conventionalcommits.org) (`feat: ...`,
-`fix: ...`, `feat!: ...` for breaking changes), which keeps the release notes readable and makes it easy to pick the
-next version: breaking changes bump the major version (minor before 1.0), `feat` the minor and `fix` the patch.
+`fix: ...`, `feat!: ...` for breaking changes), which makes it easy to pick the next version: breaking changes bump the
+major version (minor before 1.0), `feat` the minor and `fix` the patch.
