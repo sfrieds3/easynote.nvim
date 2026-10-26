@@ -1,21 +1,34 @@
 name: Release
 on:
   push:
-    branches: [main]
-  workflow_dispatch:
+    tags: ["v*.*.*"]
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
 
 jobs:
-  release-please:
-    name: Release Please
+  ci:
+    uses: ./.github/workflows/ci.yaml
+
+  release:
+    name: GitHub release
+    needs: ci
     runs-on: ubuntu-latest
+    permissions:
+      # creates the release object only; nothing is pushed and no PRs are opened
+      contents: write
     steps:
-      - uses: googleapis/release-please-action@v4
-        with:
-          # PRs opened with GITHUB_TOKEN don't trigger CI; set RELEASE_PLEASE_TOKEN (a PAT) to run CI on release PRs
-          token: ${{ secrets.RELEASE_PLEASE_TOKEN || secrets.GITHUB_TOKEN }}
-          config-file: release-please-config.json
-          manifest-file: .release-please-manifest.json
+      - name: Check tag is semver
+        run: |
+          if ! [[ "$GITHUB_REF_NAME" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]; then
+            echo "::error::tag $GITHUB_REF_NAME is not vMAJOR.MINOR.PATCH"
+            exit 1
+          fi
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          prerelease=()
+          [[ "$GITHUB_REF_NAME" == *-* ]] && prerelease=(--prerelease)
+          gh release create "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --verify-tag \
+            --title "$GITHUB_REF_NAME" --generate-notes "${prerelease[@]}"
