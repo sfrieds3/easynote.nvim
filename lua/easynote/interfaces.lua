@@ -1,27 +1,34 @@
----@class EasyNoteDefaultLocalFile
----@field dir string
----@field notes_file string
-
 ---@class EasyNoteConfiguration
----@field notes_dir string?
----@field notes_filenames table<string>?
----@field default_global_notes_file string?
----@field default_local_notes_files EasyNoteDefaultLocalFile?
----@field use_default_file boolean?
----@field default_picker DefaultPickerOptions?
+---@field notes_dir string? directory (or Obsidian vault) holding global notes
+---@field notes_filenames table<string>? filenames treated as notes files when searching
+---@field use_default_file boolean? remember the picked notes file per scope and reopen it next time
+---@field persist_defaults boolean? save remembered notes files under `stdpath("data")`
 ---@field default_notes_scope NotesScope?
 ---@field dir_markers table<string>? list of strings which will be used to mark the project root
+---@field project_notes_dir string? folder in `notes_dir` for one note per project, enables vault project notes
+---@field git_remote string? remote used to identify a project
+---@field host_aliases table<string, string>? map ssh alias hosts to real hosts, e.g. { ["github-work"] = "github.com" }
+---@field daily_notes EasyNoteDailyConfig? overrides for `.obsidian/daily-notes.json`
+---@field capture_file string? file in `notes_dir` that `:EasyNoteAdd` appends to instead of the daily note
+---@field ignore_dirs table<string>? directory names skipped when searching for notes files
 ---@field create_user_commands boolean?
----@field mappings table<string, string>?
----@field window_mappings table<string, string>?
----@field window_opts WindowOpts??
+---@field mappings table<string, string|false>?
+---@field window_mappings table<string, string|false>?
+---@field window_opts WindowOpts?
 
 ---@class UserCmdOpts
 ---@field scope NotesScope?
 ---@field root_dir string?
 ---@field floating boolean?
 ---@field default boolean?
+---@field name string? "today" or the name of a note in `notes_dir`
+
+---@class EasyNoteDailyConfig
+---@field folder string?
+---@field format string? moment.js style date format
+---@field template string? template path relative to `notes_dir`
 
 ---@class WindowOpts
 ---@field width_pct integer
 ---@field height_pct integer
+---@field border string|table?
