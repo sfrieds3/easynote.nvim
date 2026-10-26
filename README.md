@@ -143,9 +143,17 @@ Checks run in CI on every pull request:
 
 ## Releases
 
-Releases are cut by [release-please](https://github.com/googleapis/release-please) from
-[Conventional Commits](https://www.conventionalcommits.org) on `main`. Pull request titles are checked to follow the
-format (`feat: ...`, `fix: ...`, `docs: ...`, `feat!: ...` for breaking changes), so squash merge to use the title as the
-commit message. release-please keeps a release PR open that bumps the version and updates `CHANGELOG.md`; merging it tags
-`vX.Y.Z` and publishes the GitHub release. Until 1.0, breaking changes bump the minor version rather than the
-major version.
+Releases are made by pushing a semver tag:
+
+```sh
+git tag -a v0.1.0 -m v0.1.0
+git push origin v0.1.0
+```
+
+The release workflow runs the full CI suite against the tag and, if it passes, publishes a GitHub release with notes
+generated from the pull requests merged since the previous tag. Tags with a suffix (`v1.0.0-rc.1`) are marked as
+pre-releases. Actions never push commits or open pull requests.
+
+Pull request titles are checked to follow [Conventional Commits](https://www.conventionalcommits.org) (`feat: ...`,
+`fix: ...`, `feat!: ...` for breaking changes), which keeps the release notes readable and makes it easy to pick the
+next version: breaking changes bump the major version (minor before 1.0), `feat` the minor and `fix` the patch.
